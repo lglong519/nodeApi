@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="robots" content="noindex, nofollow">
+	<!-- saved from url=(0014)about:internet -->
+	<title>帐号登录</title>
+	<link rel="stylesheet" href="css/identity.css">
+</head>
+<body>
+	<div class="identity">
+		<h1>帐号登录</h1>
+		<form action="" class="userInfo">
+			<label for="username">帐号:</label>
+			<input type="text" id="username" placeholder="请输入帐号" required autofocus>
+			<div class="tips"><b></b>请输入正确的帐号</div>
+			<label for="verifyCode">验证码:</label>
+			<input type="text" id="verifyCode" placeholder="请输入验证码">
+			<div class="tips"><b></b>密码至少为6位数字或字母</div>
+			<div class="tips" id="error"><b></b>用户名或密码错误</div>
+			<input type="button" value="立即登录" id="login" class="login">
+			<a href="#" class="getCode" id="getCode">获取验证码 <span id='leftTime'></span></a>
+			<div class="toLogin">没有账号，<a href="register.html">立即注册</a></div>
+		</form>
+	</div>
+	<!--页底-->
+	<div class="footer">
+		<div class="container">
+			
+		</div>
+	</div>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/identity.js"></script>
+</body>
+
+</html>

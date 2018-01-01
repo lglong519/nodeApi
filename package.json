@@ -1,0 +1,21 @@
+{
+  "name": "nodeApi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  },
+  "dependencies": {
+    "mongodb": "^2.2.33",
+    "nodemailer": "^4.4.1",
+    "nodemailer-smtp-transport": "^2.7.4"
+  }
+}
