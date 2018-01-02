@@ -5,7 +5,8 @@
  * @version $Id$
  */
 //登录验证
-$('#login').on('click', () => {
+$('#login').on('click', login);
+function login() {
     var code = $('#verifyCode').val(),
         user = $('#username').val();
     console.log(code, user)
@@ -19,14 +20,20 @@ $('#login').on('click', () => {
             },
             success: data => {
                 console.log(data);
+                if (data == 'success') {
+                    location.href='login_success.html';
+                }else{
+                    $('#error').show();
+                }
             }
         });
     }
-});
+}
 //请求验证码
 $('#getCode').on('click', function () {
     var user = $('#username').val();
-    if (user) {
+    $('#error').hide();
+    if (user && $('#getCode').attr('disabled') != "disabled") {
         $(this).attr('disabled',true);
         $.ajax({
             type: 'post',
@@ -42,12 +49,20 @@ $('#getCode').on('click', function () {
             'color': '#666',
             'border-color': '#b0b0b0'
         });
-        var overTime = 3;
+        var overTime = 60;
         leftTime(overTime);
     }
     return false;
 });
-
+//enter 登录
+$(document).on('keydown',function (e) {
+    if(e.keyCode==13){
+        login();
+    };
+})
+$('#verifyCode,#username').on('focus', function () {
+    $('#error').hide();
+})
 function leftTime(time) {
     $('#leftTime').html(`(${time})`);
     if (time > 0) {

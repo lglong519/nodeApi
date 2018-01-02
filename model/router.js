@@ -2,18 +2,24 @@
 const url = require('url'),
     querystring = require("querystring"),
     sendMail = require("./mail"),
-    MongoClient = require('mongodb').MongoClient,
-    DBurl = 'mongodb://localhost:27017/userInfo';
-
+    redis = require("redis"),
+    client = redis.createClient(),
+    randomCode=require('./randomCode');
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 let server = () => {
 
     let app = (req, res) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
+        
         //获取请求的方式
         let method = req.method;
+        //如果不是POST返回错误
         if (method != 'POST') {
             res.writeHeader(403, { 'contentType': 'text/html;charset:"utf-8"' });
             res.write('Request method "GET" not supported');
+            res.end();
         } else {
             let postStr = '',
                 datas;
@@ -33,63 +39,43 @@ let server = () => {
 
                 //创建/发送验证码
                 if (pathName == 'generateCode') {
-                    let letters = 'abcedfghijklmlopqrstuvwxyzABCEEFGHIJKLMLOPQRSTUVWXYZ0123456789';
-                    //创建验证码
-                    for (var i = 0, codes = ''; i < 4; i++) {
-                        codes += letters[parseInt(Math.random() * (letters.length - 1))];
-                    }
+                    //创建随机码
+                    let codes = randomCode();
+                    console.log('接收邮箱：',datas.user);
+                    console.log('验证码：',codes);
                     //储存验证码，设置过期时间3分钟
-
-                    MongoClient.connect(DBurl, (err, db) => {
-                        if (err) {
-                            console.log('connect fail');
-                            return;
-                        }
-                        db.collection('user').createIndex({
-                            'overTime': 1
-                        }, {
-                                expireAfterSeconds: 180
-                            });
-                        db.collection('user').insert({
-                            'overTime': new Date(),
-                            'verifyCode': codes,
-                            'username': datas.user
-                        });
-                        db.close();
-                    });
-
-                    console.log('generateCode:', codes);
-                    console.log('user:', datas.user);
                     if (datas.user && datas.user.indexOf('@') > -1) {
+                        client.set(datas.user, codes, 'EX', 180);
+                        //向邮箱发送验证码
                         sendMail(datas.user, '登录验证码', '登录验证码：' + codes);
+                        res.write('ok');
+                    }else{
+                        res.write('account error');
                     }
                     res.end();
                 }
                 //验证 验证码
                 if (pathName == 'verifyCode') {
-                    MongoClient.connect(DBurl, (err, db) => {
-                        if (err) {
-                            console.log('connect fail');
-                            return;
-                        }
-                        //数据库获取临时验证码
-                        db.collection('user').findOne({ 'username': datas.user }, (err, result) => {
-                            if (result) {
-                                console.log(result);
-                                console.log('codes:',codes);
+                    //redis获取临时验证码
+                    client.get(datas.user, function (err, reply) {
+                        if (err){
+                            res.write('Please get your verifyCode first.');
+                        }else{
+                            if (reply){
                                 //将数据库的验证和个人输入的验证码对比
-                                if (result.verifyCode == datas.verifyCode && result.username == datas.user) {
+                                if (reply.toLowerCase() == datas.verifyCode.toLowerCase()) {
                                     res.write('success');
-                                } else {
-                                    res.write('verifyCode error');
+                                    //成功验证后删除key
+                                    client.del(datas.user);
+                                    res.end();
+                                    return;
                                 }
-                            } else {
-                                res.write('please get your verifyCode');
                             }
-                            res.end();
-                        });
-                        db.close();
-                    });
+                            res.write('verifyCode error');
+                        }
+                        console.log(err, reply);
+                        res.end();
+                    });  
                 }
             });
         }

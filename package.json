@@ -16,6 +16,7 @@
   "dependencies": {
     "mongodb": "^2.2.33",
     "nodemailer": "^4.4.1",
-    "nodemailer-smtp-transport": "^2.7.4"
+    "nodemailer-smtp-transport": "^2.7.4",
+    "redis": "^2.8.0"
   }
 }

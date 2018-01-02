@@ -183,7 +183,7 @@ body {
 .getCode{
   position: absolute;
   right: 5px;
-  bottom: 94px;
+  top: 126px;
   display: block;
   height: 30px;
   line-height: 30px;
