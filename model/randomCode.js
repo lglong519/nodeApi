@@ -4,7 +4,7 @@ module.exports =function(n) {
 	var letters = 'abcedfghijklmlopqrstuvwxyzABCEEFGHIJKLMLOPQRSTUVWXYZ0123456789';
 	//创建随机码
 	for (var i = 0, codes = ''; i <n; i++) {
-		codes += letters[parseInt(Math.random() * (letters.length - 1))];
+		codes += letters[parseInt(Math.random() * letters.length)];
 	}
 	return codes;
 }

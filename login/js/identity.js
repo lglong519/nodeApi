@@ -22,7 +22,8 @@ function login() {
             },
             success: data => {
                 console.log(data);
-                if (data == 'ok') {
+                if (data == 'success') {
+                // if (data == 'ok') {
                     location.href='login_success.html';
                 }else{
                     $('#error').show();
