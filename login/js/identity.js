@@ -14,13 +14,15 @@ function login() {
         $.ajax({
             type: 'post',
             url: 'http://127.0.0.1:7500/verifyCode',
+            // url: 'http://127.0.0.1:7500/verifySmsCode',
             data: {
                 'user': user,
+                // 'mobilePhoneNumber': user,
                 'verifyCode': code,
             },
             success: data => {
                 console.log(data);
-                if (data == 'success') {
+                if (data == 'ok') {
                     location.href='login_success.html';
                 }else{
                     $('#error').show();
@@ -38,8 +40,10 @@ $('#getCode').on('click', function () {
         $.ajax({
             type: 'post',
             url: 'http://127.0.0.1:7500/generateCode',
+            // url: 'http://127.0.0.1:7500/requestSmsCode',
             data: {
                 'user': user
+                //'mobilePhoneNumber': user
             },
             success: data => {
                 console.log(data);
